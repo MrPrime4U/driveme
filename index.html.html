@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DriveMe – Book a Driver</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #0a0a0a;
+    --white: #f8f5f0;
+    --gold: #e8b84b;
+    --gold-light: #f5d98a;
+    --dark2: #1a1a1a;
+    --dark3: #252525;
+    --gray: #6b6b6b;
+    --light-gray: #2e2e2e;
+    --green: #4caf7d;
+    --red: #e05c5c;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--black); color: var(--white); font-family: 'DM Sans', sans-serif; min-height: 100vh; overflow-x: hidden; }
+
+  /* NAV */
+  nav { display: flex; justify-content: space-between; align-items: center; padding: 24px 40px; position: fixed; top: 0; width: 100%; z-index: 100; background: rgba(10,10,10,0.85); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(232,184,75,0.1); }
+  .logo { font-family: 'Syne', sans-serif; font-size: 1.5rem; font-weight: 800; letter-spacing: -0.5px; }
+  .logo span { color: var(--gold); }
+  .nav-links { display: flex; gap: 32px; }
+  .nav-links a { color: rgba(248,245,240,0.6); text-decoration: none; font-size: 0.9rem; transition: color 0.2s; cursor: pointer; user-select: none; }
+  .nav-links a:hover { color: var(--gold); }
+  .nav-btn { background: var(--gold); color: var(--black); border: none; padding: 10px 22px; border-radius: 50px; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
+  .nav-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(232,184,75,0.35); }
+
+  /* HERO */
+  .hero { min-height: 100vh; display: flex; align-items: center; padding: 120px 40px 80px; position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; top: -200px; right: -200px; width: 700px; height: 700px; background: radial-gradient(circle, rgba(232,184,75,0.12) 0%, transparent 70%); pointer-events: none; }
+  .hero-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; max-width: 1200px; margin: 0 auto; width: 100%; }
+  .hero-tag { display: inline-flex; align-items: center; gap: 8px; background: rgba(232,184,75,0.1); border: 1px solid rgba(232,184,75,0.3); border-radius: 50px; padding: 6px 16px; font-size: 0.8rem; color: var(--gold); font-weight: 500; margin-bottom: 24px; }
+  .hero-tag::before { content: '●'; font-size: 0.5rem; animation: pulse 1.5s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+  h1 { font-family: 'Syne', sans-serif; font-size: clamp(2.8rem, 5vw, 4.2rem); font-weight: 800; line-height: 1.05; letter-spacing: -1.5px; margin-bottom: 20px; }
+  h1 em { font-style: normal; color: var(--gold); }
+  .hero-sub { font-size: 1.05rem; color: rgba(248,245,240,0.6); line-height: 1.7; max-width: 420px; margin-bottom: 36px; }
+  .hero-cta { display: flex; gap: 16px; flex-wrap: wrap; }
+  .btn-primary { background: var(--gold); color: var(--black); border: none; padding: 14px 32px; border-radius: 50px; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.95rem; cursor: pointer; transition: all 0.2s; }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(232,184,75,0.4); }
+  .btn-secondary { background: transparent; color: var(--white); border: 1px solid rgba(248,245,240,0.2); padding: 14px 32px; border-radius: 50px; font-family: 'DM Sans', sans-serif; font-weight: 500; font-size: 0.95rem; cursor: pointer; transition: all 0.2s; }
+  .btn-secondary:hover { border-color: var(--gold); color: var(--gold); }
+  .hero-stats { display: flex; gap: 32px; margin-top: 48px; }
+  .stat { }
+  .stat-num { font-family: 'Syne', sans-serif; font-size: 1.8rem; font-weight: 800; color: var(--gold); }
+  .stat-label { font-size: 0.8rem; color: var(--gray); margin-top: 2px; }
+
+  /* BOOKING CARD */
+  .booking-card { background: var(--dark2); border: 1px solid rgba(248,245,240,0.08); border-radius: 24px; padding: 32px; box-shadow: 0 40px 80px rgba(0,0,0,0.5); animation: floatUp 0.8s ease forwards; }
+  @keyframes floatUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
+  .card-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.1rem; margin-bottom: 24px; display: flex; align-items: center; gap: 10px; }
+  .card-title span { background: var(--gold); color: var(--black); width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; }
+  .tab-group { display: flex; background: var(--dark3); border-radius: 12px; padding: 4px; margin-bottom: 24px; }
+  .tab { flex: 1; padding: 10px; text-align: center; border-radius: 10px; cursor: pointer; font-size: 0.85rem; font-weight: 500; transition: all 0.2s; color: var(--gray); user-select: none; }
+  .tab.active { background: var(--gold); color: var(--black); font-weight: 700; }
+  .form-group { margin-bottom: 16px; }
+  .form-group label { font-size: 0.78rem; color: var(--gray); text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 8px; }
+  .form-group input, .form-group select { width: 100%; background: var(--dark3); border: 1px solid rgba(248,245,240,0.08); border-radius: 12px; padding: 12px 16px; color: var(--white); font-family: 'DM Sans', sans-serif; font-size: 0.95rem; outline: none; transition: border-color 0.2s; }
+  .form-group input:focus, .form-group select:focus { border-color: var(--gold); }
+  .form-group input::placeholder { color: var(--gray); }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .book-btn { width: 100%; background: var(--gold); color: var(--black); border: none; padding: 16px; border-radius: 14px; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1rem; cursor: pointer; margin-top: 8px; transition: all 0.2s; letter-spacing: 0.3px; }
+  .book-btn:hover { box-shadow: 0 8px 24px rgba(232,184,75,0.4); transform: translateY(-1px); }
+  .schedule-fields { display: none; }
+  .schedule-fields.show { display: block; }
+
+  /* SECTION COMMON */
+  section { padding: 100px 40px; max-width: 1200px; margin: 0 auto; }
+  .section-tag { font-size: 0.78rem; color: var(--gold); text-transform: uppercase; letter-spacing: 2px; font-weight: 600; margin-bottom: 16px; }
+  .section-title { font-family: 'Syne', sans-serif; font-size: clamp(2rem, 3.5vw, 2.8rem); font-weight: 800; letter-spacing: -1px; margin-bottom: 16px; line-height: 1.1; }
+  .section-sub { color: rgba(248,245,240,0.55); font-size: 1rem; line-height: 1.7; max-width: 520px; margin-bottom: 60px; }
+
+  /* HOW IT WORKS */
+  .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+  .step { background: var(--dark2); border: 1px solid rgba(248,245,240,0.06); border-radius: 20px; padding: 28px; position: relative; transition: border-color 0.3s, transform 0.3s; }
+  .step:hover { border-color: rgba(232,184,75,0.3); transform: translateY(-4px); }
+  .step-num { font-family: 'Syne', sans-serif; font-size: 2.5rem; font-weight: 800; color: rgba(232,184,75,0.15); line-height: 1; margin-bottom: 16px; }
+  .step-icon { font-size: 1.8rem; margin-bottom: 12px; }
+  .step h3 { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
+  .step p { font-size: 0.85rem; color: var(--gray); line-height: 1.6; }
+
+  /* DRIVERS */
+  .drivers-section { border-top: 1px solid rgba(248,245,240,0.06); }
+  .drivers-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .driver-card { background: var(--dark2); border: 1px solid rgba(248,245,240,0.06); border-radius: 20px; padding: 24px; transition: all 0.3s; cursor: pointer; }
+  .driver-card:hover { border-color: rgba(232,184,75,0.3); transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+  .driver-avatar { width: 64px; height: 64px; border-radius: 50%; background: linear-gradient(135deg, var(--gold), var(--gold-light)); display: flex; align-items: center; justify-content: center; font-size: 1.6rem; margin-bottom: 16px; border: 3px solid rgba(232,184,75,0.3); }
+  .driver-name { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem; margin-bottom: 4px; }
+  .driver-meta { font-size: 0.8rem; color: var(--gray); margin-bottom: 14px; }
+  .driver-rating { display: flex; align-items: center; gap: 6px; margin-bottom: 12px; }
+  .stars { color: var(--gold); font-size: 0.9rem; }
+  .rating-num { font-size: 0.85rem; font-weight: 600; }
+  .driver-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; }
+  .tag { background: rgba(232,184,75,0.1); border: 1px solid rgba(232,184,75,0.2); color: var(--gold); font-size: 0.72rem; padding: 4px 10px; border-radius: 50px; font-weight: 500; }
+  .driver-price { display: flex; justify-content: space-between; align-items: center; }
+  .price { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 800; color: var(--gold); }
+  .price span { font-size: 0.75rem; color: var(--gray); font-family: 'DM Sans', sans-serif; font-weight: 400; }
+  .available { display: flex; align-items: center; gap: 5px; font-size: 0.75rem; color: var(--green); font-weight: 500; }
+  .available::before { content: '●'; font-size: 0.5rem; }
+  .select-btn { background: var(--gold); color: var(--black); border: none; padding: 8px 18px; border-radius: 50px; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.8rem; cursor: pointer; transition: all 0.2s; }
+  .select-btn:hover { box-shadow: 0 4px 12px rgba(232,184,75,0.4); }
+
+  /* REVIEWS */
+  .reviews-section { border-top: 1px solid rgba(248,245,240,0.06); }
+  .reviews-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .review-card { background: var(--dark2); border: 1px solid rgba(248,245,240,0.06); border-radius: 20px; padding: 28px; transition: border-color 0.3s; }
+  .review-card:hover { border-color: rgba(232,184,75,0.2); }
+  .review-stars { color: var(--gold); font-size: 1rem; margin-bottom: 14px; }
+  .review-text { font-size: 0.9rem; color: rgba(248,245,240,0.75); line-height: 1.7; margin-bottom: 20px; font-style: italic; }
+  .review-user { display: flex; align-items: center; gap: 12px; }
+  .user-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #3a3a3a, #555); display: flex; align-items: center; justify-content: center; font-size: 1rem; }
+  .user-name { font-family: 'Syne', sans-serif; font-size: 0.9rem; font-weight: 700; }
+  .user-date { font-size: 0.75rem; color: var(--gray); }
+
+  /* PAYMENT */
+  .payment-section { border-top: 1px solid rgba(248,245,240,0.06); }
+  .payment-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
+  .payment-methods { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .payment-method { background: var(--dark2); border: 1px solid rgba(248,245,240,0.08); border-radius: 16px; padding: 20px; cursor: pointer; transition: all 0.2s; text-align: center; user-select: none; }
+  .payment-method:hover, .payment-method.active { border-color: var(--gold); background: rgba(232,184,75,0.05); }
+  .payment-icon { font-size: 2rem; margin-bottom: 8px; }
+  .payment-name { font-size: 0.85rem; font-weight: 500; }
+  .pricing-box { background: var(--dark2); border: 1px solid rgba(248,245,240,0.08); border-radius: 20px; padding: 28px; }
+  .pricing-box h3 { font-family: 'Syne', sans-serif; font-weight: 700; margin-bottom: 20px; }
+  .price-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid rgba(248,245,240,0.06); font-size: 0.9rem; }
+  .price-row:last-of-type { border-bottom: none; font-weight: 700; font-size: 1rem; color: var(--gold); }
+  .price-row span:first-child { color: var(--gray); }
+
+  /* MODAL */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(6px); z-index: 1000; display: none; align-items: center; justify-content: center; }
+  .modal-overlay.show { display: flex; }
+  .modal { background: var(--dark2); border: 1px solid rgba(232,184,75,0.2); border-radius: 24px; padding: 40px; max-width: 460px; width: 90%; position: relative; animation: modalIn 0.3s ease; }
+  @keyframes modalIn { from{opacity:0;transform:scale(0.92)} to{opacity:1;transform:scale(1)} }
+  .modal-close { position: absolute; top: 20px; right: 20px; background: none; border: none; color: var(--gray); font-size: 1.3rem; cursor: pointer; transition: color 0.2s; }
+  .modal-close:hover { color: var(--white); }
+  .modal-icon { font-size: 3rem; margin-bottom: 16px; text-align: center; }
+  .modal h2 { font-family: 'Syne', sans-serif; font-size: 1.6rem; font-weight: 800; text-align: center; margin-bottom: 8px; }
+  .modal p { text-align: center; color: var(--gray); font-size: 0.9rem; margin-bottom: 28px; line-height: 1.6; }
+  .modal-detail { background: var(--dark3); border-radius: 14px; padding: 20px; margin-bottom: 20px; }
+  .modal-detail-row { display: flex; justify-content: space-between; font-size: 0.88rem; padding: 6px 0; }
+  .modal-detail-row span:first-child { color: var(--gray); }
+  .modal-detail-row span:last-child { font-weight: 500; }
+  .modal-btn { width: 100%; background: var(--gold); color: var(--black); border: none; padding: 16px; border-radius: 14px; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1rem; cursor: pointer; transition: all 0.2s; }
+  .modal-btn:hover { box-shadow: 0 8px 24px rgba(232,184,75,0.4); }
+
+  /* FOOTER */
+  footer { border-top: 1px solid rgba(248,245,240,0.06); padding: 40px; text-align: center; color: var(--gray); font-size: 0.85rem; }
+  footer strong { color: var(--gold); font-family: 'Syne', sans-serif; }
+
+  /* ANIMATIONS */
+  .fade-in { opacity: 0; transform: translateY(20px); animation: fadeIn 0.7s ease forwards; }
+  @keyframes fadeIn { to{opacity:1;transform:translateY(0)} }
+  .delay-1 { animation-delay: 0.1s; }
+  .delay-2 { animation-delay: 0.2s; }
+  .delay-3 { animation-delay: 0.3s; }
+
+  @media(max-width:900px) {
+    .hero-grid,.payment-grid { grid-template-columns:1fr; }
+    .steps { grid-template-columns:1fr 1fr; }
+    .drivers-grid,.reviews-grid { grid-template-columns:1fr; }
+    nav { padding: 16px 20px; }
+    .nav-links { display:none; }
+    section { padding: 60px 20px; }
+    .hero { padding: 100px 20px 60px; }
+  }
+  @media(max-width:600px) {
+    .steps { grid-template-columns:1fr; }
+    .payment-methods { grid-template-columns:1fr 1fr; }
+    .form-row { grid-template-columns:1fr; }
+    .hero-stats { gap:20px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">Drive<span>Me</span></div>
+  <div class="nav-links">
+    <a onclick="scrollToSection('how')">How It Works</a>
+    <a onclick="scrollToSection('drivers')">Drivers</a>
+    <a onclick="scrollToSection('reviews')">Reviews</a>
+    <a onclick="scrollToSection('payment')">Pricing</a>
+  </div>
+  <button class="nav-btn" onclick="openModal()">Book Now</button>
+</nav>
+
+<div class="hero">
+  <div class="hero-grid">
+    <div>
+      <div class="hero-tag fade-in">Available 24/7 across the city</div>
+      <h1 class="fade-in delay-1">Your car.<br><em>Our driver.</em><br>Your ride.</h1>
+      <p class="hero-sub fade-in delay-2">Have your own car but don't want to drive? Book a professional driver in minutes. You relax, they drive.</p>
+      <div class="hero-cta fade-in delay-3">
+        <button class="btn-primary" onclick="openModal()">Book a Driver Now</button>
+        <button class="btn-secondary" onclick="scrollToSection('drivers')">Meet Our Drivers</button>
+      </div>
+      <div class="hero-stats fade-in delay-3">
+        <div class="stat"><div class="stat-num">2,400+</div><div class="stat-label">Verified Drivers</div></div>
+        <div class="stat"><div class="stat-num">98%</div><div class="stat-label">Satisfaction Rate</div></div>
+        <div class="stat"><div class="stat-num">5 min</div><div class="stat-label">Avg. Arrival Time</div></div>
+      </div>
+    </div>
+    <div class="booking-card">
+      <div class="card-title"><span>🚘</span> Book Your Driver</div>
+      <div class="tab-group">
+        <div class="tab active" onclick="switchTab('instant', this)">Instant Booking</div>
+        <div class="tab" onclick="switchTab('schedule', this)">Schedule Ahead</div>
+      </div>
+      <div class="form-group">
+        <label>📍 Pickup Location</label>
+        <input type="text" id="pickupInput" placeholder="Enter your current address">
+      </div>
+      <div class="form-group">
+        <label>🏁 Drop Location (optional)</label>
+        <input type="text" id="dropInput" placeholder="Where are you headed?">
+      </div>
+      <div class="form-group">
+        <label>🚗 Car Type</label>
+        <select id="carTypeSelect" onchange="updatePricingEngine()">
+          <option>Sedan</option>
+          <option>SUV</option>
+          <option>Hatchback</option>
+          <option>Luxury</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="schedule-fields" id="scheduleFields">
+        <div class="form-row">
+          <div class="form-group">
+            <label>📅 Date</label>
+            <input type="date">
+          </div>
+          <div class="form-group">
+            <label>⏰ Time</label>
+            <input type="time">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>⏳ Duration (hours)</label>
+          <select id="durationSelect">
+            <option value="2">2 hours</option>
+            <option value="4">4 hours</option>
+            <option value="6">6 hours</option>
+            <option value="8">8 hours</option>
+            <option value="12">Full day (12 hrs)</option>
+          </select>
+        </div>
+      </div>
+      <button class="book-btn" onclick="scrollToSection('drivers')">Find Available Drivers →</button>
+    </div>
+  </div>
+</div>
+
+<section id="how">
+  <p class="section-tag">Simple Process</p>
+  <h2 class="section-title">How DriveMe Works</h2>
+  <p class="section-sub">Booking a professional driver for your own car has never been easier. Done in under a minute.</p>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">01</div>
+      <div class="step-icon">📱</div>
+      <h3>Enter Your Location</h3>
+      <p>Share your pickup address and where you need to go. Or just book for the hour.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <div class="step-icon">🔍</div>
+      <h3>Choose Your Driver</h3>
+      <p>Browse verified drivers nearby. See ratings, reviews, and real-time availability.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <div class="step-icon">💳</div>
+      <h3>Pay Securely</h3>
+      <p>Pay via UPI, card, or wallet. No cash hassles. Transparent pricing upfront.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">04</div>
+      <div class="step-icon">🚗</div>
+      <h3>Driver Arrives</h3>
+      <p>Your driver arrives at your door. Hand them the keys and sit back.</p>
+    </div>
+  </div>
+</section>
+
+<section id="drivers">
+  <div class="drivers-section">
+    <p class="section-tag">Available Now</p>
+    <h2 class="section-title">Top Rated Drivers Near You</h2>
+    <p class="section-sub">All drivers are background verified, license checked, and rated by real customers.</p>
+    <div class="drivers-grid">
+      <div class="driver-card">
+        <div class="driver-avatar">👨‍✈️</div>
+        <div class="driver-name">Rajesh Kumar</div>
+        <div class="driver-meta">8 years experience · 1,240 trips</div>
+        <div class="driver-rating">
+          <span class="stars">★★★★★</span>
+          <span class="rating-num">4.97</span>
+        </div>
+        <div class="driver-tags">
+          <span class="tag">Long Routes</span>
+          <span class="tag">Night Driving</span>
+          <span class="tag">Highway</span>
+        </div>
+        <div class="driver-price">
+          <div>
+            <div class="price">₹149 <span>/ hour</span></div>
+            <div class="available">Available Now</div>
+          </div>
+          <button class="select-btn" onclick="selectDriverData('Rajesh Kumar', '4.97', 149)">Select</button>
+        </div>
+      </div>
+      <div class="driver-card">
+        <div class="driver-avatar">👩‍✈️</div>
+        <div class="driver-name">Priya Sharma</div>
+        <div class="driver-meta">5 years experience · 870 trips</div>
+        <div class="driver-rating">
+          <span class="stars">★★★★★</span>
+          <span class="rating-num">4.95</span>
+        </div>
+        <div class="driver-tags">
+          <span class="tag">City Driving</span>
+          <span class="tag">Luxury Cars</span>
+          <span class="tag">Events</span>
+        </div>
+        <div class="driver-price">
+          <div>
+            <div class="price">₹169 <span>/ hour</span></div>
+            <div class="available">Available Now</div>
+          </div>
+          <button class="select-btn" onclick="selectDriverData('Priya Sharma', '4.95', 169)">Select</button>
+        </div>
+      </div>
+      <div class="driver-card">
+        <div class="driver-avatar">🧑‍✈️</div>
+        <div class="driver-name">Arjun Mehta</div>
+        <div class="driver-meta">12 years experience · 3,100 trips</div>
+        <div class="driver-rating">
+          <span class="stars">★★★★★</span>
+          <span class="rating-num">4.99</span>
+        </div>
+        <div class="driver-tags">
+          <span class="tag">Airport Runs</span>
+          <span class="tag">Corporate</span>
+          <span class="tag">SUV Expert</span>
+        </div>
+        <div class="driver-price">
+          <div>
+            <div class="price">₹199 <span>/ hour</span></div>
+            <div class="available">Available Now</div>
+          </div>
+          <button class="select-btn" onclick="selectDriverData('Arjun Mehta', '4.99', 199)">Select</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="reviews">
+  <div class="reviews-section">
+    <p class="section-tag">Real Feedback</p>
+    <h2 class="section-title">What Our Customers Say</h2>
+    <p class="section-sub">Thousands of happy rides. Here's what people love about DriveMe.</p>
+    <div class="reviews-grid">
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <div class="review-text">"I had a wedding to attend and didn't want to worry about driving or parking. DriveMe was a lifesaver. The driver was on time, professional, and even helped with bags."</div>
+        <div class="review-user">
+          <div class="user-avatar">👩</div>
+          <div>
+            <div class="user-name">Sneha Patel</div>
+            <div class="user-date">2 weeks ago · Mumbai</div>
+          </div>
+        </div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <div class="review-text">"After a long office party, I didn't feel safe driving my car. Booked a driver in 3 minutes, he arrived in 8. Exactly what I needed. Highly recommend!"</div>
+        <div class="review-user">
+          <div class="user-avatar">👨</div>
+          <div>
+            <div class="user-name">Vikram Singh</div>
+            <div class="user-date">1 week ago · Delhi</div>
+          </div>
+        </div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <div class="review-text">"My parents are elderly and own a car but can't drive anymore. DriveMe has been perfect for them. They feel safe and independent. Best app for this purpose."</div>
+        <div class="review-user">
+          <div class="user-avatar">🧑</div>
+          <div>
+            <div class="user-name">Ananya Reddy</div>
+            <div class="user-date">3 days ago · Bangalore</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="payment">
+  <div class="payment-section">
+    <p class="section-tag">Transparent Pricing</p>
+    <h2 class="section-title">Flexible Payment Options</h2>
+    <p class="section-sub">No hidden charges. Pay the way you're most comfortable.</p>
+    <div class="payment-grid">
+      <div>
+        <div class="payment-methods">
+          <div class="payment-method active" onclick="selectPaymentMethod(this)">
+            <div class="payment-icon">📱</div>
+            <div class="payment-name">UPI</div>
+          </div>
+          <div class="payment-method" onclick="selectPaymentMethod(this)">
+            <div class="payment-icon">💳</div>
+            <div class="payment-name">Card</div>
+          </div>
+          <div class="payment-method" onclick="selectPaymentMethod(this)">
+            <div class="payment-icon">👛</div>
+            <div class="payment-name">Wallet</div>
+          </div>
+          <div class="payment-method" onclick="selectPaymentMethod(this)">
+            <div class="payment-icon">🏦</div>
+            <div class="payment-name">Net Banking</div>
+          </div>
+        </div>
+      </div>
+      <div class="pricing-box" id="pricingBoxContainer">
+        <h3>Estimated Fare Breakdown</h3>
+        <div class="price-row"><span>Base Fare</span><span>₹49</span></div>
+        <div class="price-row"><span>Driver Fee (2 hrs)</span><span>₹298</span></div>
+        <div class="price-row"><span>Platform Fee</span><span>₹20</span></div>
+        <div class="price-row"><span>Taxes & Charges</span><span>₹18</span></div>
+        <div class="price-row"><span>Total</span><span>₹385</span></div>
+        <button class="modal-btn" style="margin-top:20px" onclick="openModal()">Proceed to Book →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>© 2026 <strong>DriveMe</strong> · Professional Driver Booking · All Rights Reserved</p>
+  <p style="margin-top:8px; font-size:0.78rem;">🔒 Secure Payments &nbsp;|&nbsp; ✅ Verified Drivers &nbsp;|&nbsp; 📞 24/7 Support</p>
+</footer>
+
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-icon">🎉</div>
+    <h2>Booking Confirmed!</h2>
+    <p>Your driver is on the way. Estimated arrival in <strong style="color:var(--gold)">6 minutes</strong>. You'll receive an SMS with driver details.</p>
+    <div class="modal-detail" id="modalDetailContainer">
+      <div class="modal-detail-row"><span>Driver</span><span>Rajesh Kumar ★ 4.97</span></div>
+      <div class="modal-detail-row"><span>Arriving In</span><span>~6 minutes</span></div>
+      <div class="modal-detail-row"><span>Car Required</span><span>Sedan</span></div>
+      <div class="modal-detail-row"><span>Estimated Fare</span><span>₹385</span></div>
+      <div class="modal-detail-row"><span>Payment</span><span>UPI ✓</span></div>
+    </div>
+    <button class="modal-btn" onclick="alert('Tracking map live connectivity feature requires a backend database connection!')">Track Driver on Map 🗺️</button>
+  </div>
+</div>
+
+<script>
+  // App State Variables
+  let currentDriver = { name: "Rajesh Kumar", rating: "4.97", price: 149 };
+  let currentDuration = 2; 
+  let currentPayment = "UPI";
+
+  // Navigation smoothly scrolls to targets
+  function scrollToSection(id) {
+    const section = document.getElementById(id);
+    if (section) {
+      section.scrollIntoView({ behavior: 'smooth' });
+    }
+  }
+
+  // Switch between Instant and Schedule Tabs
+  function switchTab(type, el) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    const sf = document.getElementById('scheduleFields');
+    if (type === 'schedule') {
+      sf.classList.add('show');
+      currentDuration = parseInt(document.getElementById('durationSelect').value) || 2;
+    } else {
+      sf.classList.remove('show');
+      currentDuration = 2; // Instant resets to a baseline 2 hour rental code block
+    }
+    updatePricingEngine();
+  }
+
+  // Monitor the dropdown selections for hours 
+  document.getElementById('durationSelect').addEventListener('change', function(e) {
+    currentDuration = parseInt(e.target.value) || 2;
+    updatePricingEngine();
+  });
+
+  // Action hook when driver select button is clicked
+  function selectDriverData(name, rating, price) {
+    currentDriver.name = name;
+    currentDriver.rating = rating;
+    currentDriver.price = price;
+    updatePricingEngine();
+    openModal();
+  }
+
+  // Update visually selected payment channels
+  function selectPaymentMethod(el) {
+    document.querySelectorAll('.payment-method').forEach(m => m.classList.remove('active'));
+    el.classList.add('active');
+    currentPayment = el.querySelector('.payment-name').innerText;
+    updatePricingEngine();
+  }
+
+  // Core Math computation rendering pipeline
+  function updatePricingEngine() {
+    let baseFare = 49;
+    let driverFee = currentDriver.price * currentDuration;
+    let platformFee = 20;
+    let taxes = Math.round(driverFee * 0.05); 
+    let total = baseFare + driverFee + platformFee + taxes;
+
+    // Direct interface injection for the pricing calculations box
+    const pBox = document.getElementById('pricingBoxContainer');
+    if (pBox) {
+      pBox.innerHTML = `
+        <h3>Estimated Fare Breakdown</h3>
+        <div class="price-row"><span>Base Fare</span><span>₹${baseFare}</span></div>
+        <div class="price-row"><span>Driver Fee (${currentDuration} hrs)</span><span>₹${driverFee}</span></div>
+        <div class="price-row"><span>Platform Fee</span><span>₹${platformFee}</span></div>
+        <div class="price-row"><span>Taxes & Charges</span><span>₹${taxes}</span></div>
+        <div class="price-row"><span>Total</span><span>₹${total}</span></div>
+        <button class="modal-btn" style="margin-top:20px" onclick="openModal()">Proceed to Book →</button>
+      `;
+    }
+
+    // Direct interface data injection for the modal confirmation screen
+    const selectedCar = document.getElementById('carTypeSelect').value;
+    const modalBox = document.getElementById('modalDetailContainer');
+    if (modalBox) {
+      modalBox.innerHTML = `
+        <div class="modal-detail-row"><span>Driver</span><span>${currentDriver.name} ★ ${currentDriver.rating}</span></div>
+        <div class="modal-detail-row"><span>Arriving In</span><span>~6 minutes</span></div>
+        <div class="modal-detail-row"><span>Car Required</span><span>${selectedCar}</span></div>
+        <div class="modal-detail-row"><span>Estimated Fare</span><span>₹${total}</span></div>
+        <div class="modal-detail-row"><span>Payment</span><span>${currentPayment} ✓</span></div>
+      `;
+    }
+  }
+
+  // Modal Screen Visibility controllers
+  function openModal() {
+    updatePricingEngine(); 
+    document.getElementById('modal').classList.add('show');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    document.getElementById('modal').classList.remove('show');
+    document.body.style.overflow = '';
+  }
+
+  document.getElementById('modal').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+  });
+</script>
+</body>
+</html>
