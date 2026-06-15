@@ -26,7 +26,7 @@
   .logo { font-family: 'Syne', sans-serif; font-size: 1.5rem; font-weight: 800; letter-spacing: -0.5px; }
   .logo span { color: var(--gold); }
   .nav-links { display: flex; gap: 32px; }
-  .nav-links a { color: rgba(248,245,240,0.6); text-decoration: none; font-size: 0.9rem; transition: color 0.2s; cursor: pointer; user-select: none; }
+  .nav-links a { color: rgba(248,245,240,0.6); text-decoration: none; font-size: 0.9rem; transition: color 0.2s; cursor: pointer; }
   .nav-links a:hover { color: var(--gold); }
   .nav-btn { background: var(--gold); color: var(--black); border: none; padding: 10px 22px; border-radius: 50px; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
   .nav-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(232,184,75,0.35); }
@@ -47,7 +47,6 @@
   .btn-secondary { background: transparent; color: var(--white); border: 1px solid rgba(248,245,240,0.2); padding: 14px 32px; border-radius: 50px; font-family: 'DM Sans', sans-serif; font-weight: 500; font-size: 0.95rem; cursor: pointer; transition: all 0.2s; }
   .btn-secondary:hover { border-color: var(--gold); color: var(--gold); }
   .hero-stats { display: flex; gap: 32px; margin-top: 48px; }
-  .stat { }
   .stat-num { font-family: 'Syne', sans-serif; font-size: 1.8rem; font-weight: 800; color: var(--gold); }
   .stat-label { font-size: 0.8rem; color: var(--gray); margin-top: 2px; }
 
@@ -57,7 +56,7 @@
   .card-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.1rem; margin-bottom: 24px; display: flex; align-items: center; gap: 10px; }
   .card-title span { background: var(--gold); color: var(--black); width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; }
   .tab-group { display: flex; background: var(--dark3); border-radius: 12px; padding: 4px; margin-bottom: 24px; }
-  .tab { flex: 1; padding: 10px; text-align: center; border-radius: 10px; cursor: pointer; font-size: 0.85rem; font-weight: 500; transition: all 0.2s; color: var(--gray); user-select: none; }
+  .tab { flex: 1; padding: 10px; text-align: center; border-radius: 10px; cursor: pointer; font-size: 0.85rem; font-weight: 500; transition: all 0.2s; color: var(--gray); }
   .tab.active { background: var(--gold); color: var(--black); font-weight: 700; }
   .form-group { margin-bottom: 16px; }
   .form-group label { font-size: 0.78rem; color: var(--gray); text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 8px; }
@@ -122,7 +121,7 @@
   .payment-section { border-top: 1px solid rgba(248,245,240,0.06); }
   .payment-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
   .payment-methods { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-  .payment-method { background: var(--dark2); border: 1px solid rgba(248,245,240,0.08); border-radius: 16px; padding: 20px; cursor: pointer; transition: all 0.2s; text-align: center; user-select: none; }
+  .payment-method { background: var(--dark2); border: 1px solid rgba(248,245,240,0.08); border-radius: 16px; padding: 20px; cursor: pointer; transition: all 0.2s; text-align: center; }
   .payment-method:hover, .payment-method.active { border-color: var(--gold); background: rgba(232,184,75,0.05); }
   .payment-icon { font-size: 2rem; margin-bottom: 8px; }
   .payment-name { font-size: 0.85rem; font-weight: 500; }
@@ -182,10 +181,10 @@
 <nav>
   <div class="logo">Drive<span>Me</span></div>
   <div class="nav-links">
-    <a onclick="scrollToSection('how')">How It Works</a>
-    <a onclick="scrollToSection('drivers')">Drivers</a>
-    <a onclick="scrollToSection('reviews')">Reviews</a>
-    <a onclick="scrollToSection('payment')">Pricing</a>
+    <a onclick="scrollTo('how')">How It Works</a>
+    <a onclick="scrollTo('drivers')">Drivers</a>
+    <a onclick="scrollTo('reviews')">Reviews</a>
+    <a onclick="scrollTo('payment')">Pricing</a>
   </div>
   <button class="nav-btn" onclick="openModal()">Book Now</button>
 </nav>
@@ -198,7 +197,7 @@
       <p class="hero-sub fade-in delay-2">Have your own car but don't want to drive? Book a professional driver in minutes. You relax, they drive.</p>
       <div class="hero-cta fade-in delay-3">
         <button class="btn-primary" onclick="openModal()">Book a Driver Now</button>
-        <button class="btn-secondary" onclick="scrollToSection('drivers')">Meet Our Drivers</button>
+        <button class="btn-secondary" onclick="document.getElementById('drivers').scrollIntoView({behavior:'smooth'})">Meet Our Drivers</button>
       </div>
       <div class="hero-stats fade-in delay-3">
         <div class="stat"><div class="stat-num">2,400+</div><div class="stat-label">Verified Drivers</div></div>
@@ -206,33 +205,33 @@
         <div class="stat"><div class="stat-num">5 min</div><div class="stat-label">Avg. Arrival Time</div></div>
       </div>
     </div>
+    
     <div class="booking-card">
       <div class="card-title"><span>🚘</span> Book Your Driver</div>
       <div class="tab-group">
         <div class="tab active" onclick="switchTab('instant', this)">Instant Booking</div>
         <div class="tab" onclick="switchTab('schedule', this)">Schedule Ahead</div>
       </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>👤 Full Name</label>
-          <input type="text" id="userNameInput" placeholder="Your Name">
-        </div>
-        <div class="form-group">
-          <label>📞 Phone Number</label>
-          <input type="tel" id="userPhoneInput" placeholder="10-digit mobile">
-        </div>
+      
+      <div class="form-group">
+        <label>👤 Full Name</label>
+        <input type="text" id="userName" placeholder="Enter your full name">
+      </div>
+      <div class="form-group">
+        <label>📞 Phone Number</label>
+        <input type="tel" id="userPhone" placeholder="Enter 10-digit mobile number">
       </div>
       <div class="form-group">
         <label>📍 Pickup Location</label>
-        <input type="text" id="pickupInput" placeholder="Enter your current address">
+        <input type="text" id="pickupLoc" placeholder="Enter your current address">
       </div>
       <div class="form-group">
         <label>🏁 Drop Location (optional)</label>
-        <input type="text" id="dropInput" placeholder="Where are you headed?">
+        <input type="text" id="dropLoc" placeholder="Where are you headed?">
       </div>
       <div class="form-group">
         <label>🚗 Car Type</label>
-        <select id="carTypeSelect" onchange="updatePricingEngine()">
+        <select id="carType">
           <option>Sedan</option>
           <option>SUV</option>
           <option>Hatchback</option>
@@ -244,25 +243,25 @@
         <div class="form-row">
           <div class="form-group">
             <label>📅 Date</label>
-            <input type="date">
+            <input type="date" id="schedDate">
           </div>
           <div class="form-group">
             <label>⏰ Time</label>
-            <input type="time">
+            <input type="time" id="schedTime">
           </div>
         </div>
         <div class="form-group">
           <label>⏳ Duration (hours)</label>
-          <select id="durationSelect">
-            <option value="2">2 hours</option>
-            <option value="4">4 hours</option>
-            <option value="6">6 hours</option>
-            <option value="8">8 hours</option>
-            <option value="12">Full day (12 hrs)</option>
+          <select id="schedDuration">
+            <option>2 hours</option>
+            <option>4 hours</option>
+            <option>6 hours</option>
+            <option>8 hours</option>
+            <option>Full day</option>
           </select>
         </div>
       </div>
-      <button class="book-btn" onclick="scrollToSection('drivers')">Find Available Drivers →</button>
+      <button class="book-btn" onclick="openModal()">Find Available Drivers →</button>
     </div>
   </div>
 </div>
@@ -323,7 +322,7 @@
             <div class="price">₹149 <span>/ hour</span></div>
             <div class="available">Available Now</div>
           </div>
-          <button class="select-btn" onclick="selectDriverData('Rajesh Kumar', '4.97', 149)">Select</button>
+          <button class="select-btn" onclick="openModal()">Select</button>
         </div>
       </div>
       <div class="driver-card">
@@ -344,7 +343,7 @@
             <div class="price">₹169 <span>/ hour</span></div>
             <div class="available">Available Now</div>
           </div>
-          <button class="select-btn" onclick="selectDriverData('Priya Sharma', '4.95', 169)">Select</button>
+          <button class="select-btn" onclick="openModal()">Select</button>
         </div>
       </div>
       <div class="driver-card">
@@ -365,7 +364,7 @@
             <div class="price">₹199 <span>/ hour</span></div>
             <div class="available">Available Now</div>
           </div>
-          <button class="select-btn" onclick="selectDriverData('Arjun Mehta', '4.99', 199)">Select</button>
+          <button class="select-btn" onclick="openModal()">Select</button>
         </div>
       </div>
     </div>
@@ -423,25 +422,25 @@
     <div class="payment-grid">
       <div>
         <div class="payment-methods">
-          <div class="payment-method active" onclick="selectPaymentMethod(this)">
+          <div class="payment-method active" onclick="selectPayment(this)">
             <div class="payment-icon">📱</div>
             <div class="payment-name">UPI</div>
           </div>
-          <div class="payment-method" onclick="selectPaymentMethod(this)">
+          <div class="payment-method" onclick="selectPayment(this)">
             <div class="payment-icon">💳</div>
             <div class="payment-name">Card</div>
           </div>
-          <div class="payment-method" onclick="selectPaymentMethod(this)">
+          <div class="payment-method" onclick="selectPayment(this)">
             <div class="payment-icon">👛</div>
             <div class="payment-name">Wallet</div>
           </div>
-          <div class="payment-method" onclick="selectPaymentMethod(this)">
+          <div class="payment-method" onclick="selectPayment(this)">
             <div class="payment-icon">🏦</div>
             <div class="payment-name">Net Banking</div>
           </div>
         </div>
       </div>
-      <div class="pricing-box" id="pricingBoxContainer">
+      <div class="pricing-box">
         <h3>Estimated Fare Breakdown</h3>
         <div class="price-row"><span>Base Fare</span><span>₹49</span></div>
         <div class="price-row"><span>Driver Fee (2 hrs)</span><span>₹298</span></div>
@@ -465,110 +464,51 @@
     <div class="modal-icon">🎉</div>
     <h2>Booking Confirmed!</h2>
     <p>Your driver is on the way. Estimated arrival in <strong style="color:var(--gold)">6 minutes</strong>. You'll receive an SMS with driver details.</p>
-    <div class="modal-detail" id="modalDetailContainer">
+    <div class="modal-detail">
       <div class="modal-detail-row"><span>Driver</span><span>Rajesh Kumar ★ 4.97</span></div>
       <div class="modal-detail-row"><span>Arriving In</span><span>~6 minutes</span></div>
-      <div class="modal-detail-row"><span>Car Required</span><span>Sedan</span></div>
+      <div class="modal-detail-row"><span>Car Type</span><span id="modalCar">Sedan</span></div>
       <div class="modal-detail-row"><span>Estimated Fare</span><span>₹385</span></div>
-      <div class="modal-detail-row"><span>Payment</span><span>UPI ✓</span></div>
+      <div class="modal-detail-row"><span>Status</span><span style="color:var(--green)">Saved to Database ✓</span></div>
     </div>
-    <button class="modal-btn" onclick="alert('Tracking map live connectivity feature requires a backend database connection!')">Track Driver on Map 🗺️</button>
+    <button class="modal-btn" onclick="closeModal()">Track Driver on Map 🗺️</button>
   </div>
 </div>
 
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+
 <script>
-  // App State Variables
-  let currentDriver = { name: "Rajesh Kumar", rating: "4.97", price: 149 };
-  let currentDuration = 2; 
-  let currentPayment = "UPI";
+  // 🔴 PASTE YOUR FIREBASE CONFIG COPIED FROM FIREBASE OVER THIS BLOCK:
+  const firebaseConfig = {
+    apiKey: "AIzaSyYourKeyHere...",
+    authDomain: "your-app-id.firebaseapp.com",
+    databaseURL: "https://your-app-id-default-rtdb.firebaseio.com",
+    projectId: "your-app-id",
+    storageBucket: "your-app-id.appspot.com",
+    messagingSenderId: "1234567890",
+    appId: "1:123456:web:abcd"
+  };
 
-  // Navigation smoothly scrolls to targets
-  function scrollToSection(id) {
-    const section = document.getElementById(id);
-    if (section) {
-      section.scrollIntoView({ behavior: 'smooth' });
-    }
-  }
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  const database = firebase.database();
 
-  // Switch between Instant and Schedule Tabs
+  let activeBookingType = 'instant';
+
+  // Toggle layout sections
   function switchTab(type, el) {
+    activeBookingType = type;
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
     el.classList.add('active');
     const sf = document.getElementById('scheduleFields');
-    if (type === 'schedule') {
-      sf.classList.add('show');
-      currentDuration = parseInt(document.getElementById('durationSelect').value) || 2;
-    } else {
-      sf.classList.remove('show');
-      currentDuration = 2; // Instant resets to a baseline 2 hour rental code block
-    }
-    updatePricingEngine();
+    if (type === 'schedule') sf.classList.add('show');
+    else sf.classList.remove('show');
   }
 
-  // Monitor the dropdown selections for hours 
-  document.getElementById('durationSelect').addEventListener('change', function(e) {
-    currentDuration = parseInt(e.target.value) || 2;
-    updatePricingEngine();
-  });
-
-  // Action hook when driver select button is clicked
-  function selectDriverData(name, rating, price) {
-    currentDriver.name = name;
-    currentDriver.rating = rating;
-    currentDriver.price = price;
-    updatePricingEngine();
-    openModal();
-  }
-
-  // Update visually selected payment channels
-  function selectPaymentMethod(el) {
+  function selectPayment(el) {
     document.querySelectorAll('.payment-method').forEach(m => m.classList.remove('active'));
     el.classList.add('active');
-    currentPayment = el.querySelector('.payment-name').innerText;
-    updatePricingEngine();
-  }
-
-  // Core Math computation rendering pipeline
-  function updatePricingEngine() {
-    let baseFare = 49;
-    let driverFee = currentDriver.price * currentDuration;
-    let platformFee = 20;
-    let taxes = Math.round(driverFee * 0.05); 
-    let total = baseFare + driverFee + platformFee + taxes;
-
-    // Direct interface injection for the pricing calculations box
-    const pBox = document.getElementById('pricingBoxContainer');
-    if (pBox) {
-      pBox.innerHTML = `
-        <h3>Estimated Fare Breakdown</h3>
-        <div class="price-row"><span>Base Fare</span><span>₹${baseFare}</span></div>
-        <div class="price-row"><span>Driver Fee (${currentDuration} hrs)</span><span>₹${driverFee}</span></div>
-        <div class="price-row"><span>Platform Fee</span><span>₹${platformFee}</span></div>
-        <div class="price-row"><span>Taxes & Charges</span><span>₹${taxes}</span></div>
-        <div class="price-row"><span>Total</span><span>₹${total}</span></div>
-        <button class="modal-btn" style="margin-top:20px" onclick="openModal()">Proceed to Book →</button>
-      `;
-    }
-
-    // Direct interface data injection for the modal confirmation screen
-    const selectedCar = document.getElementById('carTypeSelect').value;
-    const modalBox = document.getElementById('modalDetailContainer');
-    if (modalBox) {
-      modalBox.innerHTML = `
-        <div class="modal-detail-row"><span>Driver</span><span>${currentDriver.name} ★ ${currentDriver.rating}</span></div>
-        <div class="modal-detail-row"><span>Arriving In</span><span>~6 minutes</span></div>
-        <div class="modal-detail-row"><span>Car Required</span><span>${selectedCar}</span></div>
-        <div class="modal-detail-row"><span>Estimated Fare</span><span>₹${total}</span></div>
-        <div class="modal-detail-row"><span>Payment</span><span>${currentPayment} ✓</span></div>
-      `;
-    }
-  }
-
-  // Modal Screen Visibility controllers
-  function openModal() {
-    updatePricingEngine(); 
-    document.getElementById('modal').classList.add('show');
-    document.body.style.overflow = 'hidden';
   }
 
   function closeModal() {
@@ -576,9 +516,55 @@
     document.body.style.overflow = '';
   }
 
-  document.getElementById('modal').addEventListener('click', function(e) {
-    if (e.target === this) closeModal();
-  });
+  function scrollTo(id) {
+    document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+  }
+
+  // Handle Form Submission & Firebase Save
+  function openModal() {
+    const name = document.getElementById('userName').value.trim();
+    const phone = document.getElementById('userPhone').value.trim();
+    const pickup = document.getElementById('pickupLoc').value.trim();
+    const drop = document.getElementById('dropLoc').value.trim();
+    const car = document.getElementById('carType').value;
+
+    // Validation Check
+    if (!name || !phone || !pickup) {
+      alert("Please fill out your Name, Phone Number, and Pickup Location!");
+      return;
+    }
+
+    // Capture schedule details if tab is active
+    let bookingDetails = {
+      type: activeBookingType,
+      customerName: name,
+      customerPhone: phone,
+      pickupLocation: pickup,
+      dropLocation: drop || "Not Provided",
+      carType: car,
+      timestamp: new Date().toLocaleString()
+    };
+
+    if (activeBookingType === 'schedule') {
+      bookingDetails.scheduledDate = document.getElementById('schedDate').value || "Unspecified";
+      bookingDetails.scheduledTime = document.getElementById('schedTime').value || "Unspecified";
+      bookingDetails.durationHours = document.getElementById('schedDuration').value;
+    }
+
+    // Save Object directly to Realtime Database
+    database.ref('bookings').push(bookingDetails)
+      .then(() => {
+        console.log("Success! Data recorded.");
+        document.getElementById('modalCar').innerText = car;
+        // Open Success popup view
+        document.getElementById('modal').classList.add('show');
+        document.body.style.overflow = 'hidden';
+      })
+      .catch((error) => {
+        console.error("Firebase Error: ", error);
+        alert("Could not connect to database. Check your Firebase Config keys configuration!");
+      });
+  }
 </script>
 </body>
 </html>
